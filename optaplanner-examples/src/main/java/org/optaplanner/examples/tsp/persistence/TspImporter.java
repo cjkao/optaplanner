@@ -49,10 +49,6 @@ public class TspImporter extends AbstractTxtSolutionImporter {
         super(new TspDao());
     }
 
-    public TspImporter(boolean withoutDao) {
-        super(withoutDao);
-    }
-
     @Override
     public String getInputFileSuffix() {
         return INPUT_FILE_SUFFIX;
@@ -129,7 +125,7 @@ public class TspImporter extends AbstractTxtSolutionImporter {
             List<Location> locationList = new ArrayList<Location>(locationListSize);
             for (int i = 0; i < locationListSize; i++) {
                 String line = bufferedReader.readLine();
-                String[] lineTokens = splitBySpace(line, 3, 4, false, true);
+                String[] lineTokens = splitBySpace(line, 3, 4);
                 Location location;
                 switch (distanceType) {
                     case AIR_DISTANCE:

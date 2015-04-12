@@ -22,9 +22,9 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.tsp.domain.location.Location;
-import org.optaplanner.examples.tsp.domain.solver.DomicileAngleVisitDifficultyWeightFactory;
+import org.optaplanner.examples.tsp.domain.solver.LatitudeVisitDifficultyComparator;
 
-@PlanningEntity(difficultyWeightFactoryClass = DomicileAngleVisitDifficultyWeightFactory.class)
+@PlanningEntity(difficultyComparatorClass = LatitudeVisitDifficultyComparator.class)
 @XStreamAlias("Visit")
 public class Visit extends AbstractPersistable implements Standstill {
 
@@ -62,15 +62,7 @@ public class Visit extends AbstractPersistable implements Standstill {
         if (previousStandstill == null) {
             return 0L;
         }
-        return getDistanceFrom(previousStandstill);
-    }
-
-    /**
-     * @param standstill never null
-     * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
-     */
-    public long getDistanceFrom(Standstill standstill) {
-        return standstill.getLocation().getDistanceTo(location);
+        return getDistanceTo(previousStandstill);
     }
 
     /**
@@ -78,7 +70,7 @@ public class Visit extends AbstractPersistable implements Standstill {
      * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
      */
     public long getDistanceTo(Standstill standstill) {
-        return location.getDistanceTo(standstill.getLocation());
+        return location.getDistance(standstill.getLocation());
     }
 
     @Override

@@ -47,7 +47,7 @@ public class RoadLocation extends Location {
     }
 
     @Override
-    public long getDistanceTo(Location location) {
+    public long getDistance(Location location) {
         if (this == location) {
             return 0L;
         }

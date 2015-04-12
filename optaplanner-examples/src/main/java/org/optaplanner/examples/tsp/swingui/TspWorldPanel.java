@@ -31,10 +31,11 @@ import java.text.NumberFormat;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
-import org.apache.commons.lang.StringUtils;
+import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
 import org.optaplanner.examples.common.swingui.latitudelongitude.LatitudeLongitudeTranslator;
@@ -108,7 +109,7 @@ public class TspWorldPanel extends JPanel {
             int y = translator.translateLatitudeToY(location.getLatitude());
             g.fillRect(x - 1, y - 1, 3, 3);
             if (location.getName() != null && visitList.size() <= 500) {
-                g.drawString(StringUtils.abbreviate(location.getName(), 20), x + 3, y - 3);
+                g.drawString(location.getName(), x + 3, y - 3);
             }
         }
         g.setColor(TangoColorFactory.ALUMINIUM_4);
@@ -121,24 +122,29 @@ public class TspWorldPanel extends JPanel {
             g.drawString(domicileLocation.getName(), domicileX + 3, domicileY - 3);
         }
         Set<Visit> needsBackToDomicileLineSet = new HashSet<Visit>(visitList);
+//        Set<Visit> needsBackToDomicileLineSet = new HashSet<Visit>();
         for (Visit trailingVisit : visitList) {
             if (trailingVisit.getPreviousStandstill() instanceof Visit) {
                 needsBackToDomicileLineSet.remove(trailingVisit.getPreviousStandstill());
+//                needsBackToDomicileLineSet.remove(trailingVisit);
             }
         }
         g.setColor(TangoColorFactory.CHOCOLATE_1);
         for (Visit visit : visitList) {
             if (visit.getPreviousStandstill() != null) {
+            	
+            	g.setColor(TangoColorFactory.CHOCOLATE_1);
                 Location previousLocation = visit.getPreviousStandstill().getLocation();
                 Location location = visit.getLocation();
                 translator.drawRoute(g, previousLocation.getLongitude(), previousLocation.getLatitude(),
                         location.getLongitude(), location.getLatitude(),
-                        location instanceof AirLocation, false);
+                        location instanceof AirLocation);
                 // Back to domicile line
                 if (needsBackToDomicileLineSet.contains(visit)) {
+                	g.setColor(Color.RED);
                     translator.drawRoute(g, location.getLongitude(), location.getLatitude(),
                             domicileLocation.getLongitude(), domicileLocation.getLatitude(),
-                            location instanceof AirLocation, true);
+                            location instanceof AirLocation);
                 }
             }
         }
@@ -159,12 +165,18 @@ public class TspWorldPanel extends JPanel {
         }
         // Show soft score
         g.setColor(TangoColorFactory.ORANGE_3);
-        SimpleLongScore score = travelingSalesmanTour.getScore();
+        HardSoftLongScore score = travelingSalesmanTour.getScore();
         if (score != null) {
-            String distanceString = travelingSalesmanTour.getDistanceString(NUMBER_FORMAT);
+            double fuel = ((double) - score.getSoftScore()) / 1000.0;
+            String fuelString = NUMBER_FORMAT.format(fuel) + " fuel";
+            
+            if(!score.isFeasible()){
+            	fuelString="infeasible";
+            }
+            
             g.setFont(g.getFont().deriveFont(Font.BOLD, (float) TEXT_SIZE * 2));
-            g.drawString(distanceString,
-                    (int) width - g.getFontMetrics().stringWidth(distanceString) - 10, (int) height - 10 - TEXT_SIZE);
+            g.drawString(fuelString,
+                    (int) width - g.getFontMetrics().stringWidth(fuelString) - 10, (int) height - 10 - TEXT_SIZE);
         }
         repaint();
     }

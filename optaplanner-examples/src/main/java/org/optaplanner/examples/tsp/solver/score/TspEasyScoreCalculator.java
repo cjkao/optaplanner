@@ -20,6 +20,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.examples.tsp.domain.Domicile;
@@ -29,26 +31,50 @@ import org.optaplanner.examples.tsp.domain.Visit;
 
 public class TspEasyScoreCalculator implements EasyScoreCalculator<TravelingSalesmanTour> {
 
-    public SimpleLongScore calculateScore(TravelingSalesmanTour tour) {
+    public HardSoftLongScore calculateScore(TravelingSalesmanTour tour) {
         List<Visit> visitList = tour.getVisitList();
         Set<Visit> tailVisitSet = new HashSet<Visit>(visitList);
+        //top 
         long score = 0L;
+        long hardScore=0L;
         for (Visit visit : visitList) {
+        	
             Standstill previousStandstill = visit.getPreviousStandstill();
             if (previousStandstill != null) {
-                score -= visit.getDistanceFromPreviousStandstill();
+				score -= visit.getDistanceFromPreviousStandstill();
                 if (previousStandstill instanceof Visit) {
                     tailVisitSet.remove(previousStandstill);
                 }
+                
+            	String name=visit.getLocation().getName();
+            	if(name!=null ){
+            		if(name.equals("BOTTOM")){
+            			int count=visitList.size()-1;
+            			Object pv=previousStandstill;
+            			while(true){
+            				if(pv instanceof Domicile){
+            					break;
+            				}
+            				pv=((Visit)pv).getPreviousStandstill();
+            				if(pv ==null){
+            					break;
+            				}else{
+            					count--;
+            				}
+            			}
+            			hardScore-= count;
+            		}
+            	}
             }
         }
         Domicile domicile = tour.getDomicile();
         for (Visit tailVisit : tailVisitSet) {
             if (tailVisit.getPreviousStandstill() != null) {
-                score -= tailVisit.getDistanceTo(domicile);
+                score -= tailVisit.getDistanceTo(domicile)*0.10; //don't want tail back to start
             }
         }
-        return SimpleLongScore.valueOf(score);
+        return HardSoftLongScore.valueOf(hardScore, score);
+//        return SimpleLongScore.valueOf(score);
     }
 
 }

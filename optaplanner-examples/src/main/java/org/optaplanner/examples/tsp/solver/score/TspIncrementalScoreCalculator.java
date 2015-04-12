@@ -66,8 +66,8 @@ public class TspIncrementalScoreCalculator extends AbstractIncrementalScoreCalcu
         if (previousStandstill != null) {
             score -= visit.getDistanceFromPreviousStandstill();
             // HACK: This counts too much, but the insert/retracts balance each other out
-            score += previousStandstill.getDistanceTo(domicile);
-            score -= visit.getDistanceTo(domicile);
+            //score += previousStandstill.getDistanceTo(domicile);
+            //score -= visit.getDistanceTo(domicile);
         }
     }
 
@@ -76,8 +76,8 @@ public class TspIncrementalScoreCalculator extends AbstractIncrementalScoreCalcu
         if (previousStandstill != null) {
             score += visit.getDistanceFromPreviousStandstill();
             // HACK: This counts too much, but the insert/retracts balance each other out
-            score -= previousStandstill.getDistanceTo(domicile);
-            score += visit.getDistanceTo(domicile);
+            //score -= previousStandstill.getDistanceTo(domicile);
+            //score += visit.getDistanceTo(domicile);
         }
     }
 
