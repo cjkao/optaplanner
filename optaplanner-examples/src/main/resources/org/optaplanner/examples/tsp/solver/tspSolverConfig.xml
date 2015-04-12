@@ -5,12 +5,14 @@
   <entityClass>org.optaplanner.examples.tsp.domain.Visit</entityClass>
 
   <scoreDirectorFactory>
-    <scoreDefinitionType>SIMPLE_LONG</scoreDefinitionType>
-    <!--<easyScoreCalculatorClass>org.optaplanner.examples.tsp.solver.score.TspEasyScoreCalculator</easyScoreCalculatorClass>-->
+    <scoreDefinitionType>HARD_SOFT_LONG</scoreDefinitionType>
+    <easyScoreCalculatorClass>org.optaplanner.examples.tsp.solver.score.TspEasyScoreCalculator</easyScoreCalculatorClass>
     <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.tsp.solver.score.TspIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
+    <!-- 
     <scoreDrl>org/optaplanner/examples/tsp/solver/tspScoreRules.drl</scoreDrl>
+     -->
     <!--<assertionScoreDirectorFactory>-->
-      <!--<easyScoreCalculatorClass>org.optaplanner.examples.tsp.solver.score.TspEasyScoreCalculator</easyScoreCalculatorClass>-->
+      <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.tsp.solver.score.TspIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
     <!--</assertionScoreDirectorFactory>-->
     <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
   </scoreDirectorFactory>
@@ -19,35 +21,66 @@
     <minutesSpentLimit>2</minutesSpentLimit>
   </termination>
   <constructionHeuristic>
-    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+    <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
   </constructionHeuristic>
   <localSearch>
+  
+  	 <termination>
+      <unimprovedMillisecondsSpentLimit>5000</unimprovedMillisecondsSpentLimit>
+    </termination>
+  
     <unionMoveSelector>
+    
+    <changeMoveSelector>
+        <entitySelector id="entitySelector1"/>
+        <valueSelector>
+          <nearbySelection>
+            <originEntitySelector mimicSelectorRef="entitySelector1"/>
+            <nearbyDistanceMeterClass>org.optaplanner.examples.tsp.domain.solver.nearby.VisitNearbyDistanceMeter</nearbyDistanceMeterClass>
+            <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+          </nearbySelection>
+        </valueSelector>
+      </changeMoveSelector>
+      <swapMoveSelector>
+        <entitySelector id="entitySelector2"/>
+        <secondaryEntitySelector>
+          <nearbySelection>
+            <originEntitySelector mimicSelectorRef="entitySelector2"/>
+            <nearbyDistanceMeterClass>org.optaplanner.examples.tsp.domain.solver.nearby.VisitNearbyDistanceMeter</nearbyDistanceMeterClass>
+            <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+          </nearbySelection>
+        </secondaryEntitySelector>
+      </swapMoveSelector>
+      <tailChainSwapMoveSelector>
+        <entitySelector id="entitySelector3"/>
+        <valueSelector>
+          <nearbySelection>
+            <originEntitySelector mimicSelectorRef="entitySelector3"/>
+            <nearbyDistanceMeterClass>org.optaplanner.examples.tsp.domain.solver.nearby.VisitNearbyDistanceMeter</nearbyDistanceMeterClass>
+            <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+          </nearbySelection>
+        </valueSelector>
+      </tailChainSwapMoveSelector>
+    
+    
+    <!-- 
       <changeMoveSelector>
         <cacheType>PHASE</cacheType>
         <selectionOrder>SHUFFLED</selectionOrder>
       </changeMoveSelector>
-      <!--<swapMoveSelector>-->
-        <!--<cacheType>PHASE</cacheType>-->
-        <!--<selectionOrder>SHUFFLED</selectionOrder>-->
-      <!--</swapMoveSelector>-->
-      <tailChainSwapMoveSelector/>
       <subChainChangeMoveSelector>
         <subChainSelector>
-          <maximumSubChainSize>50</maximumSubChainSize>
+          <maximumSubChainSize>20</maximumSubChainSize>
         </subChainSelector>
         <selectReversingMoveToo>true</selectReversingMoveToo>
       </subChainChangeMoveSelector>
-      <!--<subChainSwapMoveSelector>-->
-        <!--<selectReversingMoveToo>false</selectReversingMoveToo>-->
-      <!--</subChainSwapMoveSelector>-->
-      <!-- TODO use nearby selection to scale out -->
+     -->
     </unionMoveSelector>
     <acceptor>
-      <lateAcceptanceSize>400</lateAcceptanceSize>
+      <entityTabuSize>5</entityTabuSize>
     </acceptor>
     <forager>
-      <acceptedCountLimit>1</acceptedCountLimit>
+      <acceptedCountLimit>5000</acceptedCountLimit>
     </forager>
   </localSearch>
 </solver>
