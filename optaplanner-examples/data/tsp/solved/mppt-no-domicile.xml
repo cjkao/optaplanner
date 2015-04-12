@@ -1,0 +1,73 @@
+<TravelingSalesmanTour id="1">
+  <id>0</id>
+  <name>MPPT</name>
+  <distanceType>AIR_DISTANCE</distanceType>
+  <distanceUnitOfMeasurement>distance</distanceUnitOfMeasurement>
+  <locationList id="2">
+    <TspAirLocation id="3">
+      <id>1</id>
+      <name>TOP</name>
+      <latitude>41842.83</latitude>
+      <longitude>12491.455</longitude>
+    </TspAirLocation>
+    <TspAirLocation id="4">
+      <id>2</id>
+      <name>Madrid</name>
+      <latitude>40369.427</latitude>
+      <longitude>-3691.406</longitude>
+    </TspAirLocation>
+    <TspAirLocation id="5">
+      <id>4</id>
+      <name>Bern</name>
+      <latitude>46895.737</latitude>
+      <longitude>7437.744</longitude>
+    </TspAirLocation>
+    <TspAirLocation id="6">
+      <id>5</id>
+      <latitude>42101.0748422221</latitude>
+      <longitude>11946.447715252587</longitude>
+    </TspAirLocation>
+    <TspAirLocation id="7">
+      <id>6</id>
+      <latitude>42101.0748422221</latitude>
+      <longitude>11946.447715252587</longitude>
+    </TspAirLocation>
+    <TspAirLocation id="8">
+      <id>7</id>
+      <latitude>41575.34434246575</latitude>
+      <longitude>12187.407527640913</longitude>
+    </TspAirLocation>
+  </locationList>
+  <domicile id="9">
+    <id>1</id>
+    <location class="TspAirLocation" reference="3"/>
+  </domicile>
+  <visitList id="10">
+    <Visit id="11">
+      <id>2</id>
+      <location class="TspAirLocation" reference="4"/>
+      <previousStandstill class="Visit" id="12">
+        <id>7</id>
+        <location class="TspAirLocation" reference="8"/>
+        <previousStandstill class="Domicile" reference="9"/>
+      </previousStandstill>
+    </Visit>
+    <Visit id="13">
+      <id>4</id>
+      <location class="TspAirLocation" reference="5"/>
+      <previousStandstill class="Visit" reference="11"/>
+    </Visit>
+    <Visit id="14">
+      <id>5</id>
+      <location class="TspAirLocation" reference="6"/>
+      <previousStandstill class="Visit" reference="13"/>
+    </Visit>
+    <Visit id="15">
+      <id>6</id>
+      <location class="TspAirLocation" reference="7"/>
+      <previousStandstill class="Visit" reference="14"/>
+    </Visit>
+    <Visit reference="12"/>
+  </visitList>
+  <score id="16">0hard/-40060401soft</score>
+</TravelingSalesmanTour>
